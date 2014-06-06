@@ -17,11 +17,13 @@
 
 @property (nonatomic) int defaultTipSelectorIndex;
 
+- (IBAction)editDidBegin:(id)sender;
+- (IBAction)editDidEnd:(id)sender;
 - (IBAction)onViewTap:(id)sender;
 - (IBAction)onEditBillAmount:(id)sender;
+
 - (void)updateValues;
 - (int)getSavedTipIndex;
-
 
 @end
 
@@ -82,6 +84,14 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (IBAction)editDidBegin:(id)sender {
+}
+
+- (IBAction)editDidEnd:(id)sender {
+    float billAmount = [[self.billAmountField.text stringByReplacingOccurrencesOfString:@"$" withString:@""] floatValue];
+    self.billAmountField.text = [NSString stringWithFormat: @"$%0.2f", billAmount];
+}
+
 - (IBAction)onViewTap:(id)sender {
     [self.view endEditing:YES];
     [self updateValues];
@@ -96,8 +106,9 @@
 }
 
 - (void)updateValues {
-    float billAmount = [self.billAmountField.text floatValue];
     NSArray *tipValues = @[@(0.10),@(0.15),@(0.20)];
+
+    float billAmount = [[self.billAmountField.text stringByReplacingOccurrencesOfString:@"$" withString:@""] floatValue];
     float tipAmount = billAmount * [tipValues[self.tipControl.selectedSegmentIndex] floatValue];
     float totalAmount = billAmount + tipAmount;
     
